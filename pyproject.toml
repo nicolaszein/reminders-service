@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "reminders-service"
+version = "0.1.0"
+description = ""
+authors = ["Nicolas Zein <niczein@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "~3.9"
+fastapi = "==0.74.1"
+dependencies = "==7.1.7"
+
+[tool.poetry.dev-dependencies]
+black = "==22.1.0"
+uvicorn = "==0.17.5"
+poethepoet = "^0.12.3"
+pytest = "^7.0.1"
+isort = "^5.10.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poe.tasks]
+lint = [
+    { cmd = "black --check . --diff" },
+    { cmd = "isort --check ." },
+]
+    [tool.poe.tasks.runserver]
+    shell = "uvicorn reminders.presentation.app:app --reload --port 4000"
+
+    [tool.poe.tasks.test]
+    shell = "pytest -v tests"
