@@ -8,6 +8,8 @@ authors = ["Nicolas Zein <niczein@gmail.com>"]
 python = "~3.9"
 fastapi = "==0.74.1"
 dependencies = "==7.1.7"
+aiodynamo = {version = "==22.2.2", extras = ["aiohttp"]}
+yarl = "==1.7.2"
 
 [tool.poetry.dev-dependencies]
 black = "==22.1.0"
@@ -15,6 +17,9 @@ uvicorn = "==0.17.5"
 poethepoet = "^0.12.3"
 pytest = "^7.0.1"
 isort = "^5.10.1"
+pytest-env = "^0.6.2"
+httpx = "^0.22.0"
+pytest-asyncio = "^0.18.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -25,8 +30,22 @@ lint = [
     { cmd = "black --check . --diff" },
     { cmd = "isort --check ." },
 ]
-    [tool.poe.tasks.runserver]
-    shell = "uvicorn reminders.presentation.app:app --reload --port 4000"
-
     [tool.poe.tasks.test]
     shell = "pytest -v tests"
+
+    [tool.poe.tasks.runserver]
+    shell = "uvicorn reminders.presentation.app:app --reload --port 4000"
+    [tool.poe.tasks.runserver.env]
+        AWS_DEFAULT_REGION = "us-east-1"
+        DYNAMODB_URL = "http://localhost:8000"
+        AWS_ACCESS_KEY_ID = "local-key"
+        AWS_SECRET_ACCESS_KEY = "local-secret"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+env = [
+    "AWS_DEFAULT_REGION=us-east-1",
+    "DYNAMODB_URL=http://localhost:8000",
+    "AWS_ACCESS_KEY_ID=local-key",
+    "AWS_SECRET_ACCESS_KEY=local-secret",
+]
